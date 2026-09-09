@@ -1,6 +1,13 @@
 {
   "expenses": [
     {
+      "id": "1",
+      "description": "Grocery Shopping",
+      "amount": 850,
+      "category": "Food",
+      "date": "2026-09-04"
+    },
+    {
       "id": "2",
       "description": "Auto Rickshaw",
       "amount": 120,
@@ -27,6 +34,21 @@
       "amount": 1499,
       "category": "Shopping",
       "date": "2026-08-31"
+    },
+    {
+      "description": "Bus",
+      "amount": 100,
+      "category": "Transport",
+      "date": "2026-09-03",
+      "id": "E7mAEZVA9SU"
+    }
+  ],
+  "income": [
+    {
+      "id": "1",
+      "source": "Monthly Salary",
+      "amount": 50000,
+      "date": "2026-09-01"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

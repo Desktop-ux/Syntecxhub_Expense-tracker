@@ -1,40 +1,47 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import SummaryCards from "./components/SummaryCards";
 import ExpenseForm from "./components/ExpenseForm";
 import ExpenseList from "./components/ExpenseList";
+import IncomeForm from "./components/IncomeForm";
+import CategoryChart from "./components/CategoryChart";
 import "./App.css";
 
 function App() {
   const [expenses, setExpenses] = useState([]);
+  const [income, setIncome] = useState([]);
+
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState("");
 
+  const [source, setSource] = useState("");
+  const [incomeAmount, setIncomeAmount] = useState("");
+  const [incomeDate, setIncomeDate] = useState("");
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const totalIncome = 50000;
-
-  const totalExpenses = expenses.reduce(
-    (total, expense) => total + Number(expense.amount),
-    0
-  );
-
   useEffect(() => {
-    const fetchExpenses = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError("");
 
-        const response = await fetch("http://localhost:5000/expenses");
+        const [expensesResponse, incomeResponse] = await Promise.all([
+          fetch("http://localhost:5000/expenses"),
+          fetch("http://localhost:5000/income"),
+        ]);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch expenses");
+        if (!expensesResponse.ok || !incomeResponse.ok) {
+          throw new Error("Failed to fetch financial data");
         }
 
-        const data = await response.json();
-        setExpenses(data);
+        const expensesData = await expensesResponse.json();
+        const incomeData = await incomeResponse.json();
+
+        setExpenses(expensesData);
+        setIncome(incomeData);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -42,10 +49,35 @@ function App() {
       }
     };
 
-    fetchExpenses();
+    fetchData();
   }, []);
 
-  const addExpense = async () => {
+  const totalIncome = useMemo(() => {
+    return income.reduce(
+      (total, item) => total + Number(item.amount),
+      0
+    );
+  }, [income]);
+
+  const totalExpenses = useMemo(() => {
+    return expenses.reduce(
+      (total, expense) => total + Number(expense.amount),
+      0
+    );
+  }, [expenses]);
+
+  const categoryTotals = useMemo(() => {
+    return expenses.reduce((categories, expense) => {
+      const category = expense.category;
+
+      categories[category] =
+        (categories[category] || 0) + Number(expense.amount);
+
+      return categories;
+    }, {});
+  }, [expenses]);
+
+  const addExpense = useCallback(async () => {
     if (!description.trim() || !amount || !category || !date) {
       return;
     }
@@ -58,6 +90,8 @@ function App() {
     };
 
     try {
+      setError("");
+
       const response = await fetch("http://localhost:5000/expenses", {
         method: "POST",
         headers: {
@@ -84,10 +118,53 @@ function App() {
     } catch (error) {
       setError(error.message);
     }
-  };
+  }, [description, amount, category, date]);
 
-  const deleteExpense = async (id) => {
+  const addIncome = useCallback(async () => {
+    if (!source.trim() || !incomeAmount || !incomeDate) {
+      return;
+    }
+
+    const newIncome = {
+      source: source.trim(),
+      amount: Number(incomeAmount),
+      date: incomeDate,
+    };
+
     try {
+      setError("");
+
+      const response = await fetch("http://localhost:5000/income", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newIncome),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add income");
+      }
+
+      const savedIncome = await response.json();
+
+      setIncome((prevIncome) => [
+        ...prevIncome,
+        savedIncome,
+      ]);
+
+      setSource("");
+      setIncomeAmount("");
+      setIncomeDate("");
+    } catch (error) {
+      setError(error.message);
+    }
+  }, [source, incomeAmount, incomeDate]);
+
+  const deleteExpense = useCallback(async (id) => {
+    try {
+      setError("");
+
       const response = await fetch(
         `http://localhost:5000/expenses/${id}`,
         {
@@ -105,7 +182,7 @@ function App() {
     } catch (error) {
       setError(error.message);
     }
-  };
+  }, []);
 
   return (
     <div className="app">
@@ -118,8 +195,26 @@ function App() {
 
       <main className="container">
         <section className="hero">
-          <h2>Dashboard</h2>
-          <p>Track your expenses and manage your money.</p>
+          <div className="hero-content">
+            <div>
+              <h2>Dashboard</h2>
+              <p>Track your expenses and manage your money.</p>
+            </div>
+
+            <div className="hero-expense-form">
+              <ExpenseForm
+                description={description}
+                amount={amount}
+                category={category}
+                date={date}
+                setDescription={setDescription}
+                setAmount={setAmount}
+                setCategory={setCategory}
+                setDate={setDate}
+                addExpense={addExpense}
+              />
+            </div>
+          </div>
         </section>
 
         <SummaryCards
@@ -135,17 +230,22 @@ function App() {
             error={error}
           />
 
-          <ExpenseForm
-            description={description}
-            amount={amount}
-            category={category}
-            date={date}
-            setDescription={setDescription}
-            setAmount={setAmount}
-            setCategory={setCategory}
-            setDate={setDate}
-            addExpense={addExpense}
-          />
+          <div className="forms-column">
+            <IncomeForm
+              source={source}
+              amount={incomeAmount}
+              date={incomeDate}
+              setSource={setSource}
+              setAmount={setIncomeAmount}
+              setDate={setIncomeDate}
+              addIncome={addIncome}
+            />
+
+            <CategoryChart
+              categoryTotals={categoryTotals}
+              totalExpenses={totalExpenses}
+            />
+          </div>
         </section>
       </main>
     </div>

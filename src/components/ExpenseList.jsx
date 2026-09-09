@@ -4,6 +4,10 @@ function ExpenseList({
   loading,
   error,
 }) {
+  const sortedExpenses = [...expenses].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
+
   return (
     <div className="expense-list">
       <div className="section-heading">
@@ -22,13 +26,13 @@ function ExpenseList({
             <h3>Something went wrong</h3>
             <p>{error}</p>
           </div>
-        ) : expenses.length === 0 ? (
+        ) : sortedExpenses.length === 0 ? (
           <div className="empty-expenses">
             <h3>No expenses yet</h3>
             <p>Add your first expense to get started.</p>
           </div>
         ) : (
-          expenses.map((expense) => (
+          sortedExpenses.map((expense) => (
             <div className="expense-item" key={expense.id}>
               <div>
                 <h3>{expense.description}</h3>

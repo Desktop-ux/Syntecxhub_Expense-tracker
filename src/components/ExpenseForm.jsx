@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 function ExpenseForm({
   description,
   amount,
@@ -9,11 +11,23 @@ function ExpenseForm({
   setDate,
   addExpense,
 }) {
+  const descriptionInputRef = useRef(null);
+
+  useEffect(() => {
+    descriptionInputRef.current?.focus();
+  }, []);
+
+  const handleSubmit = async () => {
+    await addExpense();
+    descriptionInputRef.current?.focus();
+  };
+
   return (
     <div className="expense-form">
       <h2>Add New Expense</h2>
 
       <input
+        ref={descriptionInputRef}
         type="text"
         placeholder="Enter description"
         value={description}
@@ -46,9 +60,7 @@ function ExpenseForm({
         onChange={(e) => setDate(e.target.value)}
       />
 
-      <button onClick={addExpense}>
-        Add Expense
-      </button>
+      <button onClick={handleSubmit}>Add Expense</button>
     </div>
   );
 }
