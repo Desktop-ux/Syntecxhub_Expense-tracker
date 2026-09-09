@@ -11,18 +11,18 @@ function ExpenseList({
         <span>{expenses.length} transactions</span>
       </div>
 
-      {loading ? (
-        <div className="empty-expenses">
-          <h3>Loading expenses...</h3>
-          <p>Please wait while we fetch your data.</p>
-        </div>
-      ) : error ? (
-        <div className="empty-expenses">
-          <h3>Something went wrong</h3>
-          <p>{error}</p>
-        </div>
-      ) : 
-        expenses.length === 0 ? (
+      <div className="expenses-scroll">
+        {loading ? (
+          <div className="empty-expenses">
+            <h3>Loading expenses...</h3>
+            <p>Please wait while we fetch your data.</p>
+          </div>
+        ) : error ? (
+          <div className="empty-expenses">
+            <h3>Something went wrong</h3>
+            <p>{error}</p>
+          </div>
+        ) : expenses.length === 0 ? (
           <div className="empty-expenses">
             <h3>No expenses yet</h3>
             <p>Add your first expense to get started.</p>
@@ -48,8 +48,8 @@ function ExpenseList({
               </div>
             </div>
           ))
-        )
-      }
+        )}
+      </div>
     </div>
   );
 }
