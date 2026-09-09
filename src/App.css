@@ -115,8 +115,14 @@
   box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.1);
 }
 
-.hero-expense-form .expense-form button {
+.hero-expense-form .expense-form-actions {
+  display: flex;
   grid-column: span 3;
+  gap: 10px;
+}
+
+.hero-expense-form .expense-form-actions button {
+  flex: 1;
   margin-top: 0;
   padding: 10px;
   border: none;
@@ -130,20 +136,29 @@
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.hero-expense-form .expense-form button:hover {
+.hero-expense-form .expense-form-actions button:hover {
   background: #5938e8;
   transform: translateY(-1px);
 }
 
-.hero-expense-form .expense-form button:active {
+.hero-expense-form .expense-form-actions button:active {
   transform: translateY(0);
+}
+
+.hero-expense-form .expense-form-actions .cancel-button {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.hero-expense-form .expense-form-actions .cancel-button:hover {
+  background: #e5e7eb;
 }
 
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 18px;
-  margin-bottom: 24px;
+  margin-bottom: 30px;
 }
 
 .summary-card {
@@ -290,10 +305,11 @@
 .expense-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .expense-right strong {
+  margin-right: 4px;
   color: #16243a;
   white-space: nowrap;
   font-size: 14px;
@@ -314,9 +330,14 @@
 }
 
 .expense-right button:hover {
+  background: #f0edff;
+  border-color: #d9d0ff;
+  transform: scale(1.05);
+}
+
+.expense-right button:last-child:hover {
   background: #fff1f2;
   border-color: #fecdd3;
-  transform: scale(1.05);
 }
 
 .empty-expenses {
@@ -543,12 +564,9 @@
     width: 560px;
   }
 
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-  margin-bottom: 30px;
-}
+  .summary-grid {
+    gap: 14px;
+  }
 
   .summary-card {
     padding: 17px;
@@ -604,7 +622,7 @@
     grid-template-columns: 1fr 1fr;
   }
 
-  .hero-expense-form .expense-form button {
+  .hero-expense-form .expense-form-actions {
     grid-column: span 2;
   }
 }
@@ -678,8 +696,13 @@
     font-size: 17px;
   }
 
-  .hero-expense-form .expense-form button {
-    margin-top: 4px;
+  .hero-expense-form .expense-form-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .hero-expense-form .expense-form-actions button {
+    flex: 1;
   }
 
   .summary-grid {
@@ -728,4 +751,78 @@
   .chart-heading h2 {
     font-size: 17px;
   }
+}
+.expense-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #e8eaf0;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(31, 41, 55, 0.05);
+}
+
+.expense-form h2 {
+  margin: 0 0 5px;
+  color: #16243a;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.expense-form input,
+.expense-form select {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #dfe3eb;
+  border-radius: 9px;
+  outline: none;
+  background: #ffffff;
+  color: #1f2937;
+  font: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.expense-form input::placeholder {
+  color: #9ca3af;
+}
+
+.expense-form input:focus,
+.expense-form select:focus {
+  border-color: #6d4aff;
+  box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.1);
+}
+
+.expense-form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.expense-form-actions button {
+  flex: 1;
+  padding: 13px;
+  border: none;
+  border-radius: 9px;
+  background: #6d4aff;
+  color: #ffffff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.expense-form-actions button:hover {
+  background: #5938e8;
+  transform: translateY(-1px);
+}
+
+.expense-form-actions .cancel-button {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.expense-form-actions .cancel-button:hover {
+  background: #e5e7eb;
 }

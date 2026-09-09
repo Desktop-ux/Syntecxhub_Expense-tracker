@@ -9,6 +9,7 @@ import "./App.css";
 function App() {
   const [expenses, setExpenses] = useState([]);
   const [income, setIncome] = useState([]);
+  const [editingId, setEditingId] = useState(null);
 
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
@@ -120,6 +121,71 @@ function App() {
     }
   }, [description, amount, category, date]);
 
+  const editExpense = useCallback((expense) => {
+    setDescription(expense.description);
+    setAmount(expense.amount);
+    setCategory(expense.category);
+    setDate(expense.date);
+    setEditingId(expense.id);
+  }, []);
+
+  const updateExpense = useCallback(async () => {
+    if (!description.trim() || !amount || !category || !date) {
+      return;
+    }
+
+    const updatedExpense = {
+      id: editingId,
+      description: description.trim(),
+      amount: Number(amount),
+      category,
+      date,
+    };
+
+    try {
+      setError("");
+
+      const response = await fetch(
+        `http://localhost:5000/expenses/${editingId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedExpense),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update expense");
+      }
+
+      const savedExpense = await response.json();
+
+      setExpenses((prevExpenses) =>
+        prevExpenses.map((expense) =>
+          expense.id === editingId ? savedExpense : expense
+        )
+      );
+
+      setDescription("");
+      setAmount("");
+      setCategory("");
+      setDate("");
+      setEditingId(null);
+    } catch (error) {
+      setError(error.message);
+    }
+  }, [editingId, description, amount, category, date]);
+
+  const clearForm = useCallback(() => {
+    setDescription("");
+    setAmount("");
+    setCategory("");
+    setDate("");
+    setEditingId(null);
+  }, []);
+
   const addIncome = useCallback(async () => {
     if (!source.trim() || !incomeAmount || !incomeDate) {
       return;
@@ -207,11 +273,14 @@ function App() {
                 amount={amount}
                 category={category}
                 date={date}
+                editingId={editingId}
                 setDescription={setDescription}
                 setAmount={setAmount}
                 setCategory={setCategory}
                 setDate={setDate}
                 addExpense={addExpense}
+                updateExpense={updateExpense}
+                clearForm={clearForm}
               />
             </div>
           </div>
@@ -226,6 +295,7 @@ function App() {
           <ExpenseList
             expenses={expenses}
             deleteExpense={deleteExpense}
+            editExpense={editExpense}
             loading={loading}
             error={error}
           />

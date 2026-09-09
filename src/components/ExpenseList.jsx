@@ -1,6 +1,7 @@
 function ExpenseList({
   expenses,
   deleteExpense,
+  editExpense,
   loading,
   error,
 }) {
@@ -45,6 +46,10 @@ function ExpenseList({
                 <strong>
                   ₹{Number(expense.amount).toLocaleString("en-IN")}
                 </strong>
+
+                <button onClick={() => editExpense(expense)}>
+                  ✏️
+                </button>
 
                 <button onClick={() => deleteExpense(expense.id)}>
                   🗑️

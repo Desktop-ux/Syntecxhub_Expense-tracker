@@ -5,26 +5,34 @@ function ExpenseForm({
   amount,
   category,
   date,
+  editingId,
   setDescription,
   setAmount,
   setCategory,
   setDate,
   addExpense,
+  updateExpense,
+  clearForm,
 }) {
   const descriptionInputRef = useRef(null);
 
   useEffect(() => {
     descriptionInputRef.current?.focus();
-  }, []);
+  }, [editingId]);
 
   const handleSubmit = async () => {
-    await addExpense();
+    if (editingId) {
+      await updateExpense();
+    } else {
+      await addExpense();
+    }
+
     descriptionInputRef.current?.focus();
   };
 
   return (
     <div className="expense-form">
-      <h2>Add New Expense</h2>
+      <h2>{editingId ? "Edit Expense" : "Add New Expense"}</h2>
 
       <input
         ref={descriptionInputRef}
@@ -60,7 +68,17 @@ function ExpenseForm({
         onChange={(e) => setDate(e.target.value)}
       />
 
-      <button onClick={handleSubmit}>Add Expense</button>
+      <div className="expense-form-actions">
+        <button onClick={handleSubmit}>
+          {editingId ? "Update Expense" : "Add Expense"}
+        </button>
+
+        {editingId && (
+          <button className="cancel-button" onClick={clearForm}>
+            Cancel
+          </button>
+        )}
+      </div>
     </div>
   );
 }
