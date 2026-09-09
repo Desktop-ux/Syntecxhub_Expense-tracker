@@ -1,0 +1,39 @@
+{
+  "expenses": [
+    {
+      "id": 1,
+      "description": "Grocery Shopping",
+      "amount": 850,
+      "category": "Food",
+      "date": "2026-09-04"
+    },
+    {
+      "id": 2,
+      "description": "Auto Rickshaw",
+      "amount": 120,
+      "category": "Transport",
+      "date": "2026-09-03"
+    },
+    {
+      "id": 3,
+      "description": "Netflix Subscription",
+      "amount": 649,
+      "category": "Entertainment",
+      "date": "2026-09-02"
+    },
+    {
+      "id": 4,
+      "description": "Electricity Bill",
+      "amount": 1250,
+      "category": "Bills",
+      "date": "2026-09-01"
+    },
+    {
+      "id": 5,
+      "description": "Online Shopping",
+      "amount": 1499,
+      "category": "Shopping",
+      "date": "2026-08-31"
+    }
+  ]
+}
